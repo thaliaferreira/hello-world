@@ -2,178 +2,127 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 450;
+const int SCREEN_WIDTH = 900;
+const int SCREEN_HEIGHT = 500;
 
-int gameRunning = 1;
+typedef struct
+{
+	int x, y;
+	int life;
+	char *nome;
+} GIRL;
 
+int processEvent(SDL_Window *, GIRL *);
+void doRender(SDL_Renderer *, GIRL *);
+void colision(SDL_Window *, GIRL *)
 
-int main (int argc, char* args[])
+int main(int argc, char *args[])
 {
 
-	SDL_Window* window = NULL;
+	SDL_Window *window = NULL;
+	SDL_Renderer *renderer = NULL;
 
-	SDL_Surface* gScreen = NULL;
+	int gameRunning=1;
 
-	SDL_Surface* gBackground = NULL;
+	GIRL girl;
+	girl.x = 350;
+	girl.y = 250;
 
-	SDL_Surface* gPlayer = NULL;
+	if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Can't init SDL: %s", SDL_GetError());
 
-	//jogador
+	window = SDL_CreateWindow("Girl on Fire!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-	float velx= 3.5;
+	while(gameRunning)
+	{
+		gameRunning = processEvent(window, &girl);
 
-	int player_fullwidth = 480;
+		doRender(renderer, &girl);
 
-	int player_frame_width = 60;
-    int player_frame_height = 90;
+		colision(window, &girl);
 
-    SDL_Rect player_frame, player_position;
+		SDL_Delay(10);
+	}
 
-    player_frame.x = 0;
-    player_frame.y = 0;
-    player_frame.w = player_frame_width;
-    player_frame.h = player_frame_height;
-
-    player_position.x = SCREEN_WIDTH/2;
-    player_position.y = SCREEN_HEIGHT/2;
-    player_position.w = player_frame_width;
-    player_position.h = player_frame_height;
-
-    gPlayer = IMG_Load("personagem.png");
-    gBackground = IMG_Load("fundo.jpg");
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(renderer);
 
 
-	SDL_Init(SDL_INIT_VIDEO);
+	//Limpando a bagunça
+	SDL_Quit();
 
-	window = SDL_CreateWindow("Jogo", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+	return 0;
 
-	gScreen = SDL_GetWindowSurface( window );
+}
 
-    SDL_Event event;
-                              
-            while(gameRunning)
-            {
-                if(SDL_PollEvent(&event))
-                {
-                    
-                    if(event.type == SDL_QUIT)
-                    {
-                        gameRunning = 0;
-                    }
+int processEvent(SDL_Window *window, GIRL *girl)
+{
+	SDL_Event event;
+	int gameRunning = 1; 
+	
+	while(SDL_PollEvent(&event))
+	{
+		switch(event.type)
+		{
+			case SDL_QUIT:
+				gameRunning = 0;
+			break;
+		}
+	}
 
-                    if(event.type == SDL_KEYDOWN)
-                    {
-                           
-                           switch(event.key.keysym.sym)
-                           {
-                                   
-                               case SDLK_RIGHT: player_position.x += velx;
+	const Uint8 *state = SDL_GetKeyboardState(NULL);
+    	if(state[SDL_SCANCODE_LEFT])
+    	{
+       		girl->x -= 5;
+    	}
+    	if(state[SDL_SCANCODE_RIGHT])
+    	{
+       		girl->x += 5;
+    	}
+    	if(state[SDL_SCANCODE_UP])
+    	{
+        	girl->y -= 5;
+   	}
+	if(state[SDL_SCANCODE_DOWN])
+    	{
+       		girl->y += 5;
+    	}
 
-                                    if (player_frame.y == 0)
-                                    {
-                                        player_frame.y = player_frame.y + 2*player_frame_height;
-                                    }
+	return gameRunning;
+}
 
-                                    if(player_frame.y != 2*player_frame_height)
-                                    {
-                                    	player_frame.y = 2*player_frame_height;
-                                    }
+void doRender(SDL_Renderer *renderer, GIRL *girl)
+{
+	//Desenhando o fundo
+	SDL_SetRenderDrawColor(renderer, 0, 200, 0, 200);
+	SDL_RenderClear(renderer);
 
-                                   break;
+	//Desenhando o "player"
+	SDL_SetRenderDrawColor(renderer, 127, 0, 127, 255);
+	SDL_Rect rect = {girl->x, girl->y, 100, 100};
+	SDL_RenderFillRect(renderer, &rect);
 
-                               case SDLK_LEFT: player_position.x -= velx;
+	//Mostrando a obra de arte para o usuário :)
+	SDL_RenderPresent(renderer);
+}
 
-                               		if (player_frame.y == 0)
-                                    {
-                                        player_frame.y = player_frame.y + player_frame_height;
-                                    }
-
-                                    if(player_frame.y != player_frame_height)
-                                    {
-                                    	player_frame.y = player_frame_height;
-                                    }
-                                 
-                                   break;
-
-                               case SDLK_UP: player_position.y -= velx;
-
-                               		player_frame.x = 4*player_frame_width;
-                               		player_frame.y = 0;
-
-                                    if(player_frame.x != 4*player_frame_width && player_frame.y != 0)
-                                    {
-                                    	player_frame.x = 4*player_frame_width;
-                                    	player_frame.y = 0;
-                                    }
-
-                                   break;
-
-                               case SDLK_DOWN: player_position.y += velx;
-
-                               		player_frame.x = 0;
-                               		player_frame.y = 0;
-
-                                    if(player_frame.x != 0 && player_frame.y != 0)
-                                    {
-                                    	player_frame.x = 0;
-                                    	player_frame.y = 0;
-                                    }
-
-                                   break;
-
-                                   //tentativa de diagonal
-
-                               case SDLK_UP && SDLK_LEFT:
-
-                               		player_position.y -= velx;
-                               		player_position.x -= velx;
-
-                               		break;
-                           }
-                    }
-
-                    //colisao
-
-				    if (player_position.x < 0 ) 
-				    {
-				      	player_position.x = 0;
-				    }
-				    else if ( player_position.x > SCREEN_WIDTH-player_frame_width ) 
-				    {
-				      	player_position.x = SCREEN_WIDTH-player_frame_width;
-				    }
-				    if ( player_position.y < 0 ) 
-				    {
-				      	player_position.y = 0;
-				    }
-				    else if ( player_position.y > SCREEN_HEIGHT-player_frame_height ) 
-				    {
-				      	player_position.y = SCREEN_HEIGHT-player_frame_height;
-				    }
-				                    
-
-                    
-                }
-
-            SDL_BlitSurface(gBackground, NULL, gScreen, NULL);
-            SDL_BlitSurface(gPlayer, &player_frame, gScreen, &player_position);
-            
-            SDL_UpdateWindowSurface( window );
-            
-            SDL_Delay(10);
-                
-            }
-    
-                
-    
-
-    SDL_FreeSurface(gBackground);
-    SDL_FreeSurface(gPlayer);
-    
-    SDL_DestroyWindow( window );
-    
-    SDL_Quit();
-    
-    return 0;
+void colision(SDL_Window *window, GIRL *girl)
+{
+	if (girl->x < 0 ) 
+    	{
+        	girl->x = 0;
+    	}
+    	else if (girl->x > SCREEN_WIDTH-100) 
+    	{
+		girl->x = SCREEN_WIDTH-100;
+    	}
+    	if (girl->y < 0) 
+    	{
+        	girl->y = 0;
+    	}
+    	else if (girl->y > SCREEN_HEIGHT-100) 
+    	{
+        	girl->y = SCREEN_HEIGHT-100;
+    	}
 }
