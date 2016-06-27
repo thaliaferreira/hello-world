@@ -136,40 +136,40 @@ int processEvent(SDL_Window *window, GameState *game)
 	}
 
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
-    if(state[SDL_SCANCODE_UP])
-    {
-        game->girl.y -= speed;
-        if(game->srcRect.x == 0)
-    		game->srcRect.x += 4*game->girl.w;
-    	if(game->srcRect.x != 4*game->girl.w)
-    		game->srcRect.x = 4*game->girl.w;
-   	}
-    if(state[SDL_SCANCODE_DOWN])
-    {
-       	game->girl.y += speed;
-
-       	game->srcRect.x = 0;
-    	game->srcRect.y = 0;
-    	if(game->srcRect.x != 0 && game->srcRect.y != 0)
-    		game->srcRect.x = 0;
-    }
-    if(state[SDL_SCANCODE_LEFT])
-    {
-    	game->girl.x -= speed;
-    	if(game->srcRect.y == 0)
-    		game->srcRect.y += game->girl.h;
-    	if(game->srcRect.y != game->girl.h)
-    		game->srcRect.y = game->girl.h;
-    }
-    if(state[SDL_SCANCODE_RIGHT])
-    {
-       	game->girl.x += speed;
-       	if(game->srcRect.y == 0)
-    		game->srcRect.y += 2*game->girl.h;
-    	if(game->srcRect.y != 2*game->girl.h)
-    		game->srcRect.y = 2*game->girl.h;
-    }
-   
+	    if(state[SDL_SCANCODE_UP])
+	    {
+	        game->girl.y -= speed;
+	        if(game->srcRect.x == 0)
+	    		game->srcRect.x += 4*game->girl.w;
+	    	if(game->srcRect.x != 4*game->girl.w)
+	    		game->srcRect.x = 4*game->girl.w;
+	   	}
+	    if(state[SDL_SCANCODE_DOWN])
+	    {
+	       	game->girl.y += speed;
+	
+	       	game->srcRect.x = 0;
+	    	game->srcRect.y = 0;
+	    	if(game->srcRect.x != 0 && game->srcRect.y != 0)
+	    		game->srcRect.x = 0;
+	    }
+	    if(state[SDL_SCANCODE_LEFT])
+	    {
+	    	game->girl.x -= speed;
+	    	if(game->srcRect.y == 0)
+	    		game->srcRect.y += game->girl.h;
+	    	if(game->srcRect.y != game->girl.h)
+	    		game->srcRect.y = game->girl.h;
+	    }
+	    if(state[SDL_SCANCODE_RIGHT])
+	    {
+	       	game->girl.x += speed;
+	       	if(game->srcRect.y == 0)
+	    		game->srcRect.y += 2*game->girl.h;
+	    	if(game->srcRect.y != 2*game->girl.h)
+	    		game->srcRect.y = 2*game->girl.h;
+	    }
+	   
 	return gameRunning;
 }
 
