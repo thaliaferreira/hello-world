@@ -140,11 +140,17 @@ int processEvent(SDL_Window *window, GameState *game)
 	    if(state[SDL_SCANCODE_UP])
 	    {
 	        game->girl.y -= speed;
-	        if(game->srcRect.x == 0)
-	    		game->srcRect.x += 4*game->girl.w;
-	    	if(game->srcRect.x != 4*game->girl.w)
-	    		game->srcRect.x = 4*game->girl.w;
-	   	}
+
+	        game->srcRect.x = 4*game->girl.w;
+		   	game->srcRect.y = 0;
+
+	    	if(game->srcRect.x != 4*game->girl.w && game->srcRect.y != 0)
+	    	{
+	    		game->srcRect.x = 4*game->srcRect.x;
+	    		game->srcRect.y = 0;
+	    	}
+
+	   }
 	    if(state[SDL_SCANCODE_DOWN])
 	    {
 	       	game->girl.y += speed;
