@@ -90,7 +90,7 @@ int main(int argc, char *args[])
 	SDL_DestroyTexture(gameState.enemyImg);
 	SDL_DestroyRenderer(gameState.renderer);
 
-	//Limpando a bagunça
+	//Limpando a bagunça :)
 	SDL_Quit();
 
 	return 0;
