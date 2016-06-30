@@ -12,7 +12,7 @@ typedef struct
 	float x, y, w, h;
 	int life;
 	char *nome;
-	int shooting, alive;
+	int shooting, alive, facingleft, facingright;
 } GIRL;
 
 typedef struct 
@@ -167,6 +167,9 @@ int processEvent(SDL_Window *window, GameState *game)
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
 	    if(state[SDL_SCANCODE_UP])
 	    {
+	    	game->girl.facingright = 0;
+	    	game->girl.facingleft = 0;
+
 	        game->girl.y -= speedP;
 
 	        game->srcRect.x = 4*game->girl.w;
@@ -184,6 +187,9 @@ int processEvent(SDL_Window *window, GameState *game)
 
 	    if(state[SDL_SCANCODE_DOWN])
 	    {
+	        game->girl.facingright = 0;
+	    	game->girl.facingleft = 0;
+
 	       	game->girl.y += speedP;
 	
 	       	game->srcRect.x = 0;
@@ -195,6 +201,9 @@ int processEvent(SDL_Window *window, GameState *game)
 
 	    if(state[SDL_SCANCODE_LEFT])
 	    {
+	    	game->girl.facingright = 0;
+	    	game->girl.facingleft = 1;
+
 	    	game->girl.x -= speedP;
 
 	    	if(game->srcRect.y == 0)
@@ -216,6 +225,9 @@ int processEvent(SDL_Window *window, GameState *game)
 
 	    if(state[SDL_SCANCODE_RIGHT])
 	    {
+	    	game->girl.facingleft = 0;
+	    	game->girl.facingright = 1;
+
 	       	game->girl.x += speedP;
 
 	       	if(game->srcRect.y == 0)
@@ -237,10 +249,23 @@ int processEvent(SDL_Window *window, GameState *game)
 
 	    if(state[SDL_SCANCODE_SPACE])
 	   	{
-	   		if (game->srcRect.x != 420 && game->srcRect.y != 270)
+	   		if (game->girl.facingright == 1)
 	   		{
-	   			game->srcRect.x = 420;
-	   			game->srcRect.y = 270;
+		   		if (game->srcRect.x != 420 && game->srcRect.y != 270)
+		   		{
+		   			game->srcRect.x = 420;
+		   			game->srcRect.y = 270;
+		   		}
+	   		}
+
+	   		if (game->girl.facingleft == 1)
+	   		{
+	   			if (game->srcRect.x != 180 && game->srcRect.y != 270)
+		   		{
+		   			game->srcRect.x = 180;
+		   			game->srcRect.y = 270;
+		   		}
+
 	   		}
 
 	   		addBullet(game->girl.x+10, game->girl.y+5, 6);
