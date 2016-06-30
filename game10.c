@@ -105,10 +105,10 @@ void LoadGame(GameState *game)
 	SDL_FreeSurface(surface);
 
 	//fundo game over
-	surface = IMG_Load("go2.png");
+	surface = IMG_Load("gameover.jpg");
 	if(surface == NULL)
 	{
-		printf("Can't find go2.png!\n");
+		printf("Can't find gameover.jpg!\n");
 		SDL_Quit();
 		exit(1);
 	}
